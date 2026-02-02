@@ -50,6 +50,32 @@ Here are the available settings for a `chess` code block:
 
 You can permanently set some settings in the plugin settings.
 
+## Localization (beta)
+
+Chesser exposes a small localization hook for in-app Notice messages. You can override any default message key at runtime.
+
+Message keys:
+
+- `error.invalid_pgn`
+- `error.invalid_fen`
+- `error.render_failed`
+- `error.update_failed`
+- `error.replay_failed`
+- `error.illegal_move`
+- `error.opening_move_failed`
+
+Call `setMessages` early (for example, in your plugin `onload`) before any boards render.
+
+Example:
+
+```ts
+import { setMessages } from "./i18n";
+
+setMessages({
+  "error.invalid_fen": "Impossible de lire le FEN. Verifiez la chaine.",
+});
+```
+
 ### PGN formatting notes
 
 PGN must be properly formatted as a multiline YAML string. Use `|` to indicate multiline, then indent the PGN lines by 2 or 4 spaces.
