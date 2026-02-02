@@ -32,7 +32,7 @@ export default class ChesserMenu {
 							startingPositons.forEach((category) => {
 								category.items.forEach((item) => {
 									optgroup.createEl("option", {
-										value: item.eco,
+										value: item.fen,
 										text: item.name,
 									});
 								});
@@ -40,7 +40,7 @@ export default class ChesserMenu {
 						});
 
 						const startingPosition = this.getStartingPositionFromFen(chesser.getFen());
-						const startingPositionName = startingPosition ? startingPosition.eco : "custom";
+						const startingPositionName = startingPosition ? startingPosition.fen : "custom";
 						el.value = startingPositionName;
 					},
 				);
@@ -53,7 +53,7 @@ export default class ChesserMenu {
 						return;
 					}
 
-					const startingPosition = startingPositons.flatMap((cat) => cat.items).find((item) => item.eco === value);
+					const startingPosition = startingPositons.flatMap((cat) => cat.items).find((item) => item.fen === value);
 
 					this.chesser.loadFen(startingPosition.fen, startingPosition.moves);
 				});
@@ -76,7 +76,7 @@ export default class ChesserMenu {
 	}
 
 	getStartingPositionFromFen(fen: string) {
-		return startingPositons.flatMap((cat) => cat.items).find((item) => item.eco === fen);
+		return startingPositons.flatMap((cat) => cat.items).find((item) => item.fen === fen);
 	}
 
 	createToolbar() {
