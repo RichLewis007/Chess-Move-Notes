@@ -209,9 +209,20 @@ export class Chesser extends MarkdownRenderChild {
 		return undefined;
 	}
 
+	private get_source_view(): MarkdownView | null {
+		const leaves = this.app.workspace.getLeavesOfType("markdown");
+		for (const leaf of leaves) {
+			const view = leaf.view;
+			if (view instanceof MarkdownView && view.file?.path === this.ctx.sourcePath) {
+				return view;
+			}
+		}
+		return null;
+	}
+
 	private write_config(config: Partial<ChesserConfig>) {
 		console.debug("writing config to localStorage", config);
-		const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+		const view = this.get_source_view();
 		if (!view) {
 			new Notice("Chesser: Failed to retrieve active view");
 			console.error("Chesser: Failed to retrieve view when writing config");
