@@ -17,6 +17,7 @@ import {
 
 import { type ChesserConfig, parse_user_config } from "./ChesserConfig";
 import type { ChesserSettings } from "./ChesserSettings";
+import { t } from "./i18n";
 import ChesserMenu from "./menu";
 import { applyMoveTokens, normalizeMoveTokens } from "./moveSequence";
 
@@ -120,10 +121,18 @@ export class Chesser extends MarkdownRenderChild {
 
 		if (config.pgn) {
 			console.debug("loading from pgn", config.pgn);
-			this.chess.loadPgn(config.pgn);
+			try {
+				this.chess.loadPgn(config.pgn);
+			} catch (e) {
+				this.notifyError(t("error.invalid_pgn"), e, "Chesser: Invalid PGN");
+			}
 		} else if (config.fen) {
 			console.debug("loading from fen", config.fen);
-			this.chess.load(config.fen);
+			try {
+				this.chess.load(config.fen);
+			} catch (e) {
+				this.notifyError(t("error.invalid_fen"), e, "Chesser: Invalid FEN");
+			}
 		}
 
 		this.moves = config.moves ?? this.chess.history({ verbose: true });
@@ -149,7 +158,7 @@ export class Chesser extends MarkdownRenderChild {
 				},
 			});
 		} catch (e) {
-			new Notice("Chesser error: Invalid config");
+			new Notice(t("error.render_failed"));
 			console.error(e);
 			return;
 		}
@@ -225,8 +234,8 @@ export class Chesser extends MarkdownRenderChild {
 		console.debug("writing config to localStorage", config);
 		const view = this.get_source_view();
 		if (!view) {
-			new Notice("Chesser: Failed to retrieve active view");
-			console.error("Chesser: Failed to retrieve view when writing config");
+			new Notice(t("error.update_failed"));
+			console.error("Chesser: Failed to retrieve source view when writing config");
 			return;
 		}
 		const sectionRange = this.get_section_range();
@@ -244,6 +253,16 @@ export class Chesser extends MarkdownRenderChild {
 		} catch (e) {
 			// failed to parse. show error...
 			console.error("failed to write config", e);
+		}
+	}
+
+	private notifyError(userMessage: string, error?: unknown, logMessage?: string) {
+		new Notice(userMessage);
+		const message = logMessage ?? userMessage;
+		if (error) {
+			console.error(message, error);
+		} else {
+			console.error(message);
 		}
 	}
 
@@ -324,9 +343,15 @@ export class Chesser extends MarkdownRenderChild {
 			}
 		} else {
 			while (this.currentMoveIdx < moveIdx) {
-				this.currentMoveIdx++;
-				const move = this.moves[this.currentMoveIdx];
-				this.chess.move(move);
+				const nextIdx = this.currentMoveIdx + 1;
+				const move = this.moves[nextIdx];
+				try {
+					this.chess.move(move);
+				} catch (e) {
+					this.notifyError(t("error.replay_failed"), e, "Chesser: Failed to replay move");
+					return;
+				}
+				this.currentMoveIdx = nextIdx;
 			}
 		}
 
@@ -363,10 +388,11 @@ export class Chesser extends MarkdownRenderChild {
 						try {
 							move = this.chess.move({ from: orig, to: dest });
 						} catch (e) {
-							console.error("Chesser: invalid move", e);
+							this.notifyError(t("error.illegal_move"), e, "Chesser: Invalid move");
 							return;
 						}
 						if (!move) {
+							this.notifyError(t("error.illegal_move"), undefined, "Chesser: Invalid move");
 							return;
 						}
 						this.currentMoveIdx++;
@@ -408,7 +434,7 @@ export class Chesser extends MarkdownRenderChild {
 
 			const tokens = normalizeMoveTokens(moves);
 			this.moves = applyMoveTokens(this.chess, tokens, (token, error) => {
-				console.error(`Chesser: invalid move in opening sequence (${token})`, error);
+				this.notifyError(t("error.opening_move_failed"), error, `Chesser: Invalid move in opening sequence (${token})`);
 			});
 			this.currentMoveIdx = this.moves.length - 1;
 
@@ -417,7 +443,11 @@ export class Chesser extends MarkdownRenderChild {
 				lastMove = [move.from, move.to];
 			}
 		} else {
-			this.chess.load(fen);
+			try {
+				this.chess.load(fen);
+			} catch (e) {
+				this.notifyError(t("error.invalid_fen"), e, "Chesser: Invalid FEN");
+			}
 		}
 
 		this.cg.set({ fen: this.chess.fen(), lastMove });
