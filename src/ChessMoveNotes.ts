@@ -15,10 +15,10 @@ import {
 	stringifyYaml,
 } from "obsidian";
 
-import { type ChesserConfig, parse_user_config } from "./ChesserConfig";
-import type { ChesserSettings } from "./ChesserSettings";
+import { type ChessMoveNotesConfig, parse_user_config } from "./ChessMoveNotesConfig";
+import type { ChessMoveNotesSettings } from "./ChessMoveNotesSettings";
 import { t } from "./i18n";
-import ChesserMenu from "./menu";
+import ChessMoveNotesMenu from "./menu";
 import { applyMoveTokens, normalizeMoveTokens } from "./moveSequence";
 
 // To bundle all css files in styles.css with rollup
@@ -61,28 +61,43 @@ import "../assets/board-css/green.css";
 import "../assets/board-css/purple.css";
 import "../assets/board-css/ic.css";
 
-export function draw_chessboard(app: App, settings: ChesserSettings) {
+export function draw_chessboard(app: App, settings: ChessMoveNotesSettings) {
 	return (source: string, el: HTMLElement, ctx: MarkdownPostProcessorContext) => {
 		const user_config = parse_user_config(settings, source);
-		ctx.addChild(new Chesser(el, ctx, user_config, app));
+		ctx.addChild(new ChessMoveNotes(el, ctx, user_config, app));
 	};
 }
 
+const STORAGE_KEY_PREFIX = "chess-move-notes";
+const LEGACY_STORAGE_KEY_PREFIX = "chesser";
+
+function storageKey(prefix: string, id: string) {
+	return `${prefix}-${id}`;
+}
+
 function read_state(id: string) {
-	const savedDataStr = localStorage.getItem(`chesser-${id}`);
+	const newKey = storageKey(STORAGE_KEY_PREFIX, id);
+	const legacyKey = storageKey(LEGACY_STORAGE_KEY_PREFIX, id);
+	const savedDataStr = localStorage.getItem(newKey) ?? localStorage.getItem(legacyKey);
 	try {
-		return JSON.parse(savedDataStr);
+		const parsed = JSON.parse(savedDataStr);
+		if (savedDataStr && localStorage.getItem(newKey) === null && localStorage.getItem(legacyKey) !== null) {
+			localStorage.setItem(newKey, JSON.stringify(parsed));
+		}
+		return parsed;
 	} catch (e) {
 		console.error(e);
 	}
 	return {};
 }
 
-function write_state(id: string, game_state: ChesserConfig) {
-	localStorage.setItem(`chesser-${id}`, JSON.stringify(game_state));
+function write_state(id: string, game_state: ChessMoveNotesConfig) {
+	const payload = JSON.stringify(game_state);
+	localStorage.setItem(storageKey(STORAGE_KEY_PREFIX, id), payload);
+	localStorage.setItem(storageKey(LEGACY_STORAGE_KEY_PREFIX, id), payload);
 }
 
-export class Chesser extends MarkdownRenderChild {
+export class ChessMoveNotes extends MarkdownRenderChild {
 	private ctx: MarkdownPostProcessorContext;
 	private app: App;
 
@@ -90,12 +105,17 @@ export class Chesser extends MarkdownRenderChild {
 	private cg: Api;
 	private chess: Chess;
 
-	private menu: ChesserMenu;
+	private menu: ChessMoveNotesMenu;
 	private moves: Move[];
 
 	public currentMoveIdx: number;
 
-	constructor(containerEl: HTMLElement, ctx: MarkdownPostProcessorContext, user_config: ChesserConfig, app: App) {
+	constructor(
+		containerEl: HTMLElement,
+		ctx: MarkdownPostProcessorContext,
+		user_config: ChessMoveNotesConfig,
+		app: App,
+	) {
 		super(containerEl);
 
 		this.app = app;
@@ -124,14 +144,14 @@ export class Chesser extends MarkdownRenderChild {
 			try {
 				this.chess.loadPgn(config.pgn);
 			} catch (e) {
-				this.notifyError(t("error.invalid_pgn"), e, "Chesser: Invalid PGN");
+				this.notifyError(t("error.invalid_pgn"), e, "Chess Move Notes: Invalid PGN");
 			}
 		} else if (config.fen) {
 			console.debug("loading from fen", config.fen);
 			try {
 				this.chess.load(config.fen);
 			} catch (e) {
-				this.notifyError(t("error.invalid_fen"), e, "Chesser: Invalid FEN");
+				this.notifyError(t("error.invalid_fen"), e, "Chess Move Notes: Invalid FEN");
 			}
 		}
 
@@ -176,17 +196,17 @@ export class Chesser extends MarkdownRenderChild {
 			});
 		}
 
-		this.menu = new ChesserMenu(containerEl, this);
+		this.menu = new ChessMoveNotesMenu(containerEl, this);
 	}
 
 	private set_style(el: HTMLElement, pieceStyle: string, boardStyle: string) {
-		el.addClasses([pieceStyle, `${boardStyle}-board`, "chesser-container"]);
+		el.addClasses([pieceStyle, `${boardStyle}-board`, "chess-move-notes-container", "chesser-container"]);
 	}
 
 	private get_section_range(): [EditorPosition, EditorPosition] | null {
 		const sectionInfo = this.ctx.getSectionInfo(this.containerEl);
 		if (!sectionInfo) {
-			console.error("Chesser: Failed to retrieve section info for code block");
+			console.error("Chess Move Notes: Failed to retrieve section info for code block");
 			return null;
 		}
 
@@ -202,7 +222,7 @@ export class Chesser extends MarkdownRenderChild {
 		];
 	}
 
-	private get_config(view: MarkdownView): ChesserConfig | undefined {
+	private get_config(view: MarkdownView): ChessMoveNotesConfig | undefined {
 		const sectionRange = this.get_section_range();
 		if (!sectionRange) {
 			return undefined;
@@ -230,12 +250,12 @@ export class Chesser extends MarkdownRenderChild {
 		return null;
 	}
 
-	private write_config(config: Partial<ChesserConfig>) {
+	private write_config(config: Partial<ChessMoveNotesConfig>) {
 		console.debug("writing config to localStorage", config);
 		const view = this.get_source_view();
 		if (!view) {
 			new Notice(t("error.update_failed"));
-			console.error("Chesser: Failed to retrieve source view when writing config");
+			console.error("Chess Move Notes: Failed to retrieve source view when writing config");
 			return;
 		}
 		const sectionRange = this.get_section_range();
@@ -348,7 +368,7 @@ export class Chesser extends MarkdownRenderChild {
 				try {
 					this.chess.move(move);
 				} catch (e) {
-					this.notifyError(t("error.replay_failed"), e, "Chesser: Failed to replay move");
+					this.notifyError(t("error.replay_failed"), e, "Chess Move Notes: Failed to replay move");
 					return;
 				}
 				this.currentMoveIdx = nextIdx;
@@ -388,11 +408,11 @@ export class Chesser extends MarkdownRenderChild {
 						try {
 							move = this.chess.move({ from: orig, to: dest });
 						} catch (e) {
-							this.notifyError(t("error.illegal_move"), e, "Chesser: Invalid move");
+							this.notifyError(t("error.illegal_move"), e, "Chess Move Notes: Invalid move");
 							return;
 						}
 						if (!move) {
-							this.notifyError(t("error.illegal_move"), undefined, "Chesser: Invalid move");
+							this.notifyError(t("error.illegal_move"), undefined, "Chess Move Notes: Invalid move");
 							return;
 						}
 						this.currentMoveIdx++;
@@ -434,7 +454,11 @@ export class Chesser extends MarkdownRenderChild {
 
 			const tokens = normalizeMoveTokens(moves);
 			this.moves = applyMoveTokens(this.chess, tokens, (token, error) => {
-				this.notifyError(t("error.opening_move_failed"), error, `Chesser: Invalid move in opening sequence (${token})`);
+				this.notifyError(
+					t("error.opening_move_failed"),
+					error,
+					`Chess Move Notes: Invalid move in opening sequence (${token})`,
+				);
 			});
 			this.currentMoveIdx = this.moves.length - 1;
 
@@ -446,7 +470,7 @@ export class Chesser extends MarkdownRenderChild {
 			try {
 				this.chess.load(fen);
 			} catch (e) {
-				this.notifyError(t("error.invalid_fen"), e, "Chesser: Invalid FEN");
+				this.notifyError(t("error.invalid_fen"), e, "Chess Move Notes: Invalid FEN");
 			}
 		}
 

@@ -1,22 +1,33 @@
 # local-only files
 local/
 .cursorignore
+.DS_Store
 
 # Intellij
 *.iml
 .idea
+.vscode
 
 # npm
 node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # build
 main.js
 *.js.map
+dist/
+out/
+coverage/
+.vite/
 
 RESOURCES.md
 .direnv
 .envrc
-out/
 
 .obsidian/
-dist/
+.env
+.env.local
+.env.*.local

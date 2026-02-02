@@ -1,6 +1,6 @@
 # Chess Move Notes
 
-Chess diagrams and move notation inside [Obsidian](https://obsidian.md/).
+Chess diagrams and move notation inside [Obsidian](https://obsidian.md/) (maintained fork of Chesser).
 
 ## Status and upstream
 
@@ -12,14 +12,14 @@ License: GNU AGPLv3 (same as upstream). See [LICENSE](LICENSE.TXT).
 
 - Actively maintained fork focused on stability and compatibility first (desktop and mobile).
 - Dependency updates and build hygiene, with fixes proposed upstream when practical.
-- Separate plugin identity so it can coexist with Chesser (different plugin id and repo).
+- Separate plugin identity so it can coexist with the original plugin (different plugin id and repo).
 - Roadmap and issue tracking live here: https://github.com/RichLewis007/Chess-Move-Notes/issues
 
 At the moment, core behavior is intended to match upstream as closely as possible while maintenance fixes land.
 
 ## Demonstration
 
-![chesser_demo](https://raw.githubusercontent.com/SilentVoid13/Chesser/master/imgs/chesser_demo.gif)
+![chess_move_notes_demo](imgs/chess-move-notes_demo.gif)
 
 ## Usage
 
@@ -27,7 +27,7 @@ To use this plugin, create a `chess` code block in a note.
 
 Example:
 
-![chesser_block](imgs/chesser_block.png)
+![chess_move_notes_block](imgs/chess-move-notes_block.png)
 
 This will create a basic chess board in the start position.
 
@@ -52,7 +52,7 @@ You can permanently set some settings in the plugin settings.
 
 ## Localization (beta)
 
-Chesser exposes a small localization hook for in-app Notice messages. You can override any default message key at runtime.
+Chess Move Notes exposes a small localization hook for in-app Notice messages. You can override any default message key at runtime.
 
 Message keys:
 
@@ -75,6 +75,15 @@ setMessages({
   "error.invalid_fen": "Impossible de lire le FEN. Verifiez la chaine.",
 });
 ```
+
+## Legacy compatibility
+
+To keep older notes working:
+
+- Code blocks: `chesser` blocks are still supported, alongside `chess-move-notes` and `chess`.
+- Stored state: the plugin reads legacy localStorage keys and migrates them forward.
+- Writes: state is written to both the new and legacy localStorage prefixes.
+- CSS: the container keeps the legacy `chesser-container` class alongside the new class.
 
 ### PGN formatting notes
 

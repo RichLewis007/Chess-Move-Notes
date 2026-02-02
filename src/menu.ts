@@ -1,19 +1,19 @@
 import { Setting, setIcon } from "obsidian";
-import type { Chesser } from "./Chesser";
+import type { ChessMoveNotes } from "./ChessMoveNotes";
 import startingPositons from "./startingPositions";
 
 type StartingPosition = (typeof startingPositons)[number]["items"][number];
 
-export default class ChesserMenu {
-	private chesser: Chesser;
+export default class ChessMoveNotesMenu {
+	private chessMoveNotes: ChessMoveNotes;
 	private containerEl: HTMLElement;
 
 	private movesListEl: HTMLElement;
 	private openingIndex: Map<string, StartingPosition>;
 	private fenToKey: Map<string, string>;
 
-	constructor(parentEl: HTMLElement, chesser: Chesser) {
-		this.chesser = chesser;
+	constructor(parentEl: HTMLElement, chessMoveNotes: ChessMoveNotes) {
+		this.chessMoveNotes = chessMoveNotes;
 		this.openingIndex = new Map();
 		this.fenToKey = new Map();
 
@@ -56,7 +56,7 @@ export default class ChesserMenu {
 							});
 						});
 
-						const startingPositionKey = this.getStartingPositionKeyFromFen(chesser.getFen());
+						const startingPositionKey = this.getStartingPositionKeyFromFen(chessMoveNotes.getFen());
 						el.value = startingPositionKey ?? "custom";
 					},
 				);
@@ -65,7 +65,7 @@ export default class ChesserMenu {
 					const value = (ev.currentTarget as HTMLSelectElement).value;
 
 					if (value === "starting-position") {
-						this.chesser.loadFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", []);
+						this.chessMoveNotes.loadFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", []);
 						return;
 					}
 					if (value === "custom") {
@@ -77,13 +77,13 @@ export default class ChesserMenu {
 						return;
 					}
 
-					this.chesser.loadFen(startingPosition.fen, startingPosition.moves);
+					this.chessMoveNotes.loadFen(startingPosition.fen, startingPosition.moves);
 				});
 
 				new Setting(sectionEl).setName("Enable Free Move?").addToggle((toggle) => {
-					toggle.setValue(this.chesser.getBoardState().movable.free);
+					toggle.setValue(this.chessMoveNotes.getBoardState().movable.free);
 					toggle.onChange((value) => {
-						this.chesser.setFreeMove(value);
+						this.chessMoveNotes.setFreeMove(value);
 					});
 				});
 			});
@@ -112,7 +112,7 @@ export default class ChesserMenu {
 			setIcon(btn, "switch");
 			btn.addEventListener("click", (e: MouseEvent) => {
 				e.preventDefault();
-				this.chesser.flipBoard();
+				this.chessMoveNotes.flipBoard();
 			});
 		});
 
@@ -121,8 +121,8 @@ export default class ChesserMenu {
 			setIcon(btn, "restore-file-glyph");
 			btn.addEventListener("click", (e: MouseEvent) => {
 				e.preventDefault();
-				while (this.chesser.currentMoveIdx >= 0) {
-					this.chesser.undo_move();
+				while (this.chessMoveNotes.currentMoveIdx >= 0) {
+					this.chessMoveNotes.undo_move();
 				}
 			});
 		});
@@ -132,7 +132,7 @@ export default class ChesserMenu {
 			setIcon(btn, "left-arrow");
 			btn.addEventListener("click", (e: MouseEvent) => {
 				e.preventDefault();
-				this.chesser.undo_move();
+				this.chessMoveNotes.undo_move();
 			});
 		});
 
@@ -141,7 +141,7 @@ export default class ChesserMenu {
 			setIcon(btn, "right-arrow");
 			btn.addEventListener("click", (e: MouseEvent) => {
 				e.preventDefault();
-				this.chesser.redo_move();
+				this.chessMoveNotes.redo_move();
 			});
 		});
 
@@ -150,7 +150,7 @@ export default class ChesserMenu {
 			setIcon(btn, "two-blank-pages");
 			btn.addEventListener("click", (e: MouseEvent) => {
 				e.preventDefault();
-				navigator.clipboard.writeText(this.chesser.getFen());
+				navigator.clipboard.writeText(this.chessMoveNotes.getFen());
 			});
 		});
 	}
@@ -158,18 +158,18 @@ export default class ChesserMenu {
 	redrawMoveList() {
 		this.movesListEl.empty();
 		this.movesListEl.createDiv({
-			text: this.chesser.turn() === "b" ? "Black's turn" : "White's turn",
+			text: this.chessMoveNotes.turn() === "b" ? "Black's turn" : "White's turn",
 			cls: "chess-turn-text",
 		});
 		this.movesListEl.createDiv("chess-move-list", (moveListEl) => {
-			this.chesser.history().forEach((move, idx) => {
+			this.chessMoveNotes.history().forEach((move, idx) => {
 				const moveEl = moveListEl.createDiv({
-					cls: `chess-move ${this.chesser.currentMoveIdx === idx ? "chess-move-active" : ""}`,
+					cls: `chess-move ${this.chessMoveNotes.currentMoveIdx === idx ? "chess-move-active" : ""}`,
 					text: move.san,
 				});
 				moveEl.addEventListener("click", (ev) => {
 					ev.preventDefault();
-					this.chesser.update_turn_idx(idx);
+					this.chessMoveNotes.update_turn_idx(idx);
 				});
 			});
 		});
