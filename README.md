@@ -2,8 +2,6 @@
 
 Chess diagrams and move notation inside [Obsidian](https://obsidian.md/).
 
-Repo: https://github.com/RichLewis007/Chess-Move-Notes
-
 ## Status and upstream
 
 This project is a maintained fork of [Chesser](https://github.com/SilentVoid13/Chesser) by [SilentVoid13](https://github.com/SilentVoid13). This fork focuses on maintenance, bug fixes, dependency updates, and incremental improvements. When possible, changes will be proposed upstream via pull requests.
