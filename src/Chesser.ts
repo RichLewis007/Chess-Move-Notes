@@ -334,7 +334,16 @@ export class Chesser extends MarkdownRenderChild {
 			this.cg.set({
 				events: {
 					move: (orig: Key, dest: Key) => {
-						const move = this.chess.move({ from: orig, to: dest });
+						let move: Move | null = null;
+						try {
+							move = this.chess.move({ from: orig, to: dest });
+						} catch (e) {
+							console.error("Chesser: invalid move", e);
+							return;
+						}
+						if (!move) {
+							return;
+						}
 						this.currentMoveIdx++;
 						this.moves = [...this.moves.slice(0, this.currentMoveIdx), move];
 						this.sync_board_with_gamestate();
@@ -373,11 +382,24 @@ export class Chesser extends MarkdownRenderChild {
 			this.chess.reset();
 
 			moves.forEach((fullMove) => {
-				fullMove.split(" ").forEach((halfMove) => {
-					const move = this.chess.move(halfMove);
-					this.moves.push(move);
-					this.currentMoveIdx++;
-				});
+				fullMove
+					.split(/\s+/)
+					.map((halfMove) => halfMove.trim())
+					.filter(Boolean)
+					.forEach((halfMove) => {
+						let move: Move | null = null;
+						try {
+							move = this.chess.move(halfMove);
+						} catch (e) {
+							console.error("Chesser: invalid move in opening sequence", e);
+							return;
+						}
+						if (!move) {
+							return;
+						}
+						this.moves.push(move);
+						this.currentMoveIdx++;
+					});
 			});
 
 			if (this.currentMoveIdx >= 0) {
