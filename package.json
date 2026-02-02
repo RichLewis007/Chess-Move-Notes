@@ -1,27 +1,48 @@
 {
-  "name": "Chesser",
-  "version": "0.2.1",
-  "description": "A chess game viewer/editor",
-  "main": "main.js",
-  "type": "module",
-  "scripts": {
-    "build": "tsc -noEmit -skipLibCheck && vite build",
-    "dev": "vite build --watch",
-    "new-release": "node scripts/version-bump.mjs && git-cliff"
-  },
-  "keywords": [],
-  "devDependencies": {
-    "@types/chess.js": "^0.13.7",
-    "@types/node": "^22.15.2",
-    "builtin-modules": "^5.0.0",
-    "obsidian": "1.8.7",
-    "tslib": "^2.8.1",
-    "typescript": "^5.8.3",
-    "vite": "^6.3.3"
-  },
-  "dependencies": {
-    "chess.js": "^1.2.0",
-    "chessground": "^9.1.1",
-    "nanoid": "^5.1.5"
-  }
+	"name": "chess-move-notes",
+	"version": "0.3.0",
+	"description": "Chess diagrams and move notation for Obsidian (maintained fork of Chesser).",
+	"main": "main.js",
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/RichLewis007/Chess-Move-Notes.git"
+	},
+	"bugs": {
+		"url": "https://github.com/RichLewis007/Chess-Move-Notes/issues"
+	},
+	"homepage": "https://github.com/RichLewis007/Chess-Move-Notes#readme",
+	"scripts": {
+		"build": "tsc -noEmit -skipLibCheck && vite build",
+		"dev": "vite build --watch",
+		"new-release": "node scripts/version-bump.mjs && git-cliff",
+		"format": "biome format --write .",
+		"lint": "biome lint .",
+		"check": "biome check .",
+		"check:fix": "biome check --write .",
+		"prepare": "husky"
+	},
+	"lint-staged": {
+		"*.{ts,tsx,js,jsx,json,md,yml,yaml}": [
+			"biome check --write"
+		]
+	},
+	"keywords": [],
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.13",
+		"@types/chess.js": "^0.13.7",
+		"@types/node": "^22.15.2",
+		"builtin-modules": "^5.0.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.2.7",
+		"obsidian": "1.8.7",
+		"tslib": "^2.8.1",
+		"typescript": "^5.8.3",
+		"vite": "^6.3.3"
+	},
+	"dependencies": {
+		"chess.js": "^1.2.0",
+		"chessground": "^9.1.1",
+		"nanoid": "^5.1.5"
+	}
 }

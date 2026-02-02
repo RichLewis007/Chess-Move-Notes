@@ -1,26 +1,39 @@
-# This is a basic workflow to help you get started with Actions
+name: Release
 
-name: Plugin release
-
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     tags:
-      - "*"
+      - "v*.*.*"
+      - "*.*.*"
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  build-and-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: npm build
-        run: |
-          npm install
-          npm run build --if-present
-      - name: Create Release
-        # https://github.com/ncipollo/release-action
-        uses: ncipollo/release-action@v1.7.3
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
         with:
-          artifacts: "manifest.json,out/main.js,out/styles.css"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Create release zip
+        run: |
+          cd out
+          zip -r ../chess-move-notes-${GITHUB_REF_NAME}.zip .
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2.5.0
+        with:
+          files: chess-move-notes-${{ github.ref_name }}.zip

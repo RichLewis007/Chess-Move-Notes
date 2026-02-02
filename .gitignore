@@ -1,10 +1,13 @@
+# local-only files
+local/
+.cursorignore
+
 # Intellij
 *.iml
 .idea
 
 # npm
 node_modules
-package-lock.json
 
 # build
 main.js
@@ -14,3 +17,6 @@ RESOURCES.md
 .direnv
 .envrc
 out/
+
+.obsidian/
+dist/

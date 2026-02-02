@@ -1,10 +1,10 @@
 {
-  "id": "chesser-obsidian",
-  "name": "Chesser",
-  "version": "0.2.1",
-  "minAppVersion": "0.9.12",
-  "description": "A chess game viewer/editor",
-  "author": "SilentVoid",
-  "authorUrl": "https://github.com/SilentVoid13",
-  "isDesktopOnly": false
+	"id": "chess-move-notes",
+	"name": "Chess Move Notes",
+	"version": "0.3.0",
+	"minAppVersion": "0.9.12",
+	"description": "Chess diagrams and move notation for Obsidian (maintained fork of Chesser).",
+	"author": "Rich Lewis",
+	"authorUrl": "https://github.com/RichLewis007",
+	"isDesktopOnly": false
 }
