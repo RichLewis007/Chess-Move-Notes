@@ -2,14 +2,30 @@ import { Setting, setIcon } from "obsidian";
 import type { Chesser } from "./Chesser";
 import startingPositons from "./startingPositions";
 
+type StartingPosition = (typeof startingPositons)[number]["items"][number];
+
 export default class ChesserMenu {
 	private chesser: Chesser;
 	private containerEl: HTMLElement;
 
 	private movesListEl: HTMLElement;
+	private openingIndex: Map<string, StartingPosition>;
+	private fenToKey: Map<string, string>;
 
 	constructor(parentEl: HTMLElement, chesser: Chesser) {
 		this.chesser = chesser;
+		this.openingIndex = new Map();
+		this.fenToKey = new Map();
+
+		startingPositons.forEach((category) => {
+			category.items.forEach((item, itemIndex) => {
+				const key = this.buildOpeningKey(category.id, itemIndex);
+				this.openingIndex.set(key, item);
+				if (!this.fenToKey.has(item.fen)) {
+					this.fenToKey.set(item.fen, key);
+				}
+			});
+		});
 
 		this.containerEl = parentEl.createDiv("chess-menu-container", (containerEl) => {
 			containerEl.createDiv({ cls: "chess-menu-section" }, (sectionEl) => {
@@ -30,18 +46,18 @@ export default class ChesserMenu {
 						el.createEl("optgroup", {}, (optgroup) => {
 							optgroup.label = "Popular Openings";
 							startingPositons.forEach((category) => {
-								category.items.forEach((item) => {
+								category.items.forEach((item, itemIndex) => {
+									const key = this.buildOpeningKey(category.id, itemIndex);
 									optgroup.createEl("option", {
-										value: item.fen,
-										text: item.name,
+										value: key,
+										text: `${item.eco} - ${item.name}`,
 									});
 								});
 							});
 						});
 
-						const startingPosition = this.getStartingPositionFromFen(chesser.getFen());
-						const startingPositionName = startingPosition ? startingPosition.fen : "custom";
-						el.value = startingPositionName;
+						const startingPositionKey = this.getStartingPositionKeyFromFen(chesser.getFen());
+						el.value = startingPositionKey ?? "custom";
 					},
 				);
 
@@ -56,7 +72,7 @@ export default class ChesserMenu {
 						return;
 					}
 
-					const startingPosition = startingPositons.flatMap((cat) => cat.items).find((item) => item.fen === value);
+					const startingPosition = this.openingIndex.get(value);
 					if (!startingPosition) {
 						return;
 					}
@@ -81,8 +97,12 @@ export default class ChesserMenu {
 		this.createToolbar();
 	}
 
-	getStartingPositionFromFen(fen: string) {
-		return startingPositons.flatMap((cat) => cat.items).find((item) => item.fen === fen);
+	private buildOpeningKey(categoryId: string, itemIndex: number) {
+		return `${categoryId}:${itemIndex}`;
+	}
+
+	getStartingPositionKeyFromFen(fen: string) {
+		return this.fenToKey.get(fen) ?? null;
 	}
 
 	createToolbar() {
