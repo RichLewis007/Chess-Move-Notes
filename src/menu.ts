@@ -52,8 +52,14 @@ export default class ChesserMenu {
 						this.chesser.loadFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", []);
 						return;
 					}
+					if (value === "custom") {
+						return;
+					}
 
 					const startingPosition = startingPositons.flatMap((cat) => cat.items).find((item) => item.eco === value);
+					if (!startingPosition) {
+						return;
+					}
 
 					this.chesser.loadFen(startingPosition.fen, startingPosition.moves);
 				});
