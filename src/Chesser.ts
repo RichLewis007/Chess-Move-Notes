@@ -18,6 +18,7 @@ import {
 import { type ChesserConfig, parse_user_config } from "./ChesserConfig";
 import type { ChesserSettings } from "./ChesserSettings";
 import ChesserMenu from "./menu";
+import { applyMoveTokens, normalizeMoveTokens } from "./moveSequence";
 
 // To bundle all css files in styles.css with rollup
 import "../assets/custom.css";
@@ -405,26 +406,11 @@ export class Chesser extends MarkdownRenderChild {
 			this.moves = [];
 			this.chess.reset();
 
-			moves.forEach((fullMove) => {
-				fullMove
-					.split(/\s+/)
-					.map((halfMove) => halfMove.trim())
-					.filter(Boolean)
-					.forEach((halfMove) => {
-						let move: Move | null = null;
-						try {
-							move = this.chess.move(halfMove);
-						} catch (e) {
-							console.error("Chesser: invalid move in opening sequence", e);
-							return;
-						}
-						if (!move) {
-							return;
-						}
-						this.moves.push(move);
-						this.currentMoveIdx++;
-					});
+			const tokens = normalizeMoveTokens(moves);
+			this.moves = applyMoveTokens(this.chess, tokens, (token, error) => {
+				console.error(`Chesser: invalid move in opening sequence (${token})`, error);
 			});
+			this.currentMoveIdx = this.moves.length - 1;
 
 			if (this.currentMoveIdx >= 0) {
 				const move = this.moves[this.currentMoveIdx];

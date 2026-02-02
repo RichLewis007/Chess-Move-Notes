@@ -549,7 +549,7 @@ const categories = [
 			"Vienna Game",
 			"rnbqkbnr/pppp1ppp/8/4p3/4P3/2N5/PPPP1PPP/R1BQKBNR b KQkq - 1 2",
 			"Vienna_Game",
-				["e4 e5", "Nc3"],
+			["e4 e5", "Nc3"],
 		),
 		new StartingPosition(
 			"C27",

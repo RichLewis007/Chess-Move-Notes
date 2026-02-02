@@ -56,7 +56,7 @@ export default class ChesserMenu {
 						return;
 					}
 
-				const startingPosition = startingPositons.flatMap((cat) => cat.items).find((item) => item.fen === value);
+					const startingPosition = startingPositons.flatMap((cat) => cat.items).find((item) => item.fen === value);
 					if (!startingPosition) {
 						return;
 					}
