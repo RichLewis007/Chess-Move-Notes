@@ -173,8 +173,12 @@ export class Chesser extends MarkdownRenderChild {
 		el.addClasses([pieceStyle, `${boardStyle}-board`, "chesser-container"]);
 	}
 
-	private get_section_range(): [EditorPosition, EditorPosition] {
+	private get_section_range(): [EditorPosition, EditorPosition] | null {
 		const sectionInfo = this.ctx.getSectionInfo(this.containerEl);
+		if (!sectionInfo) {
+			console.error("Chesser: Failed to retrieve section info for code block");
+			return null;
+		}
 
 		return [
 			{
@@ -189,7 +193,11 @@ export class Chesser extends MarkdownRenderChild {
 	}
 
 	private get_config(view: MarkdownView): ChesserConfig | undefined {
-		const [from, to] = this.get_section_range();
+		const sectionRange = this.get_section_range();
+		if (!sectionRange) {
+			return undefined;
+		}
+		const [from, to] = sectionRange;
 		const codeblockText = view.editor.getRange(from, to);
 		try {
 			return parseYaml(codeblockText);
@@ -207,6 +215,11 @@ export class Chesser extends MarkdownRenderChild {
 		if (!view) {
 			new Notice("Chesser: Failed to retrieve active view");
 			console.error("Chesser: Failed to retrieve view when writing config");
+			return;
+		}
+		const sectionRange = this.get_section_range();
+		if (!sectionRange) {
+			return;
 		}
 		try {
 			const updated = stringifyYaml({
@@ -214,7 +227,7 @@ export class Chesser extends MarkdownRenderChild {
 				...config,
 			});
 
-			const [from, to] = this.get_section_range();
+			const [from, to] = sectionRange;
 			view.editor.replaceRange(updated, from, to);
 		} catch (e) {
 			// failed to parse. show error...
