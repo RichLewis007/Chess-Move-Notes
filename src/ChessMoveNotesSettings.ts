@@ -1,8 +1,8 @@
 import { type App, PluginSettingTab, Setting } from "obsidian";
-import { BOARD_STYLES, PIECE_STYLES } from "./ChesserConfig";
-import type ChesserPlugin from "./main";
+import { BOARD_STYLES, PIECE_STYLES } from "./ChessMoveNotesConfig";
+import type ChessMoveNotesPlugin from "./main";
 
-export interface ChesserSettings {
+export interface ChessMoveNotesSettings {
 	orientation: string;
 	viewOnly: boolean;
 	drawable: boolean;
@@ -11,7 +11,7 @@ export interface ChesserSettings {
 	boardStyle: string;
 }
 
-export const DEFAULT_SETTINGS: ChesserSettings = {
+export const DEFAULT_SETTINGS: ChessMoveNotesSettings = {
 	orientation: "white",
 	viewOnly: false,
 	drawable: true,
@@ -20,10 +20,10 @@ export const DEFAULT_SETTINGS: ChesserSettings = {
 	boardStyle: "brown",
 };
 
-export class ChesserSettingTab extends PluginSettingTab {
-	plugin: ChesserPlugin;
+export class ChessMoveNotesSettingTab extends PluginSettingTab {
+	plugin: ChessMoveNotesPlugin;
 
-	constructor(app: App, plugin: ChesserPlugin) {
+	constructor(app: App, plugin: ChessMoveNotesPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}

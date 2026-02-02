@@ -1,9 +1,9 @@
 import type { DrawShape } from "chessground/draw";
 import { parseYaml } from "obsidian";
 
-import type { ChesserSettings } from "./ChesserSettings";
+import type { ChessMoveNotesSettings } from "./ChessMoveNotesSettings";
 
-export interface ChesserConfig extends ChesserSettings {
+export interface ChessMoveNotesConfig extends ChessMoveNotesSettings {
 	id?: string;
 	fen: string;
 	pgn?: string;
@@ -44,8 +44,8 @@ export const PIECE_STYLES = [
 ];
 export const BOARD_STYLES = ["blue", "brown", "green", "ic", "purple"];
 
-export function parse_user_config(settings: ChesserSettings, content: string): ChesserConfig {
-	const userConfig: ChesserConfig = {
+export function parse_user_config(settings: ChessMoveNotesSettings, content: string): ChessMoveNotesConfig {
+	const userConfig: ChessMoveNotesConfig = {
 		...settings,
 		fen: "",
 	};

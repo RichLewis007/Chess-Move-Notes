@@ -9,7 +9,7 @@ assignees: RichLewis007
 
 **Plugin informations (please complete the following information):**
  - OS: [e.g. Windows 10]
- - Chesser version: [e.g. 0.1.0]
+ - Chess Move Notes version: [e.g. 0.3.0]
  - Obsidian version: [e.g. 0.9.11]
 
 **Describe the bug**
