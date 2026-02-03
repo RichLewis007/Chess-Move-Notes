@@ -55,7 +55,7 @@ export function parse_user_config(settings: ChessMoveNotesSettings, content: str
 			...userConfig,
 			...parseYaml(content),
 		};
-	} catch (_e) {
+	} catch {
 		// failed to parse
 		return userConfig;
 	}

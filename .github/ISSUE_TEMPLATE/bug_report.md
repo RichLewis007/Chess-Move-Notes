@@ -1,16 +1,16 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
+title: ""
 labels: bug
 assignees: RichLewis007
-
 ---
 
 **Plugin informations (please complete the following information):**
- - OS: [e.g. Windows 10]
- - Chess Move Notes version: [e.g. 0.3.0]
- - Obsidian version: [e.g. 0.9.11]
+
+- OS: [e.g. Windows 10]
+- Chess Move Notes version: [e.g. 0.3.0]
+- Obsidian version: [e.g. 0.9.11]
 
 **Describe the bug**
 A clear and concise description of what the bug is.

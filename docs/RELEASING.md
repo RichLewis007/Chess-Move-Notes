@@ -1,6 +1,7 @@
 # Releasing Chess Move Notes
 
 This repo uses GitHub Actions to build and attach a release zip containing:
+
 - manifest.json
 - main.js
 - styles.css (if generated)
@@ -34,5 +35,5 @@ This repo uses GitHub Actions to build and attach a release zip containing:
 
 - The release zip is what users install in:
   <vault>/.obsidian/plugins/chess-move-notes/
+- Local builds run `postbuild` to copy manifest.json, README.md, and LICENSE.TXT into `out/` after `npm run build`.
 - If you change minAppVersion in manifest.json, remember to update versions.json accordingly.
-
