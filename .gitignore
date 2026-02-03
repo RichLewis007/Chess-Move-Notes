@@ -2,6 +2,7 @@
 local/
 .cursorignore
 .DS_Store
+/menu-node.sh
 
 # Intellij
 *.iml
