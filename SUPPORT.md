@@ -10,6 +10,7 @@ Thanks for using Chess Move Notes.
 ## Reporting bugs
 
 Please open a GitHub issue with:
+
 - Steps to reproduce
 - Expected vs actual behavior
 - Your Obsidian version and platform

@@ -6,9 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Switched formatting and linting from Biome to Prettier + ESLint.
+- Added Prettier and ESLint configs plus updated lint-staged, `check`, and fix scripts.
+
 ## [0.3.0] - 2026-02-02
 
 ### Added
+
 - Vitest test setup with `test`, `test:run`, and `test:coverage` scripts.
 - Coverage reporting and CI workflow that runs lint and tests with coverage.
 - Unit tests for move token normalization and starting position data integrity.
@@ -17,11 +23,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - README documentation for localization keys and usage.
 
 ### Changed
+
 - Opening dropdown now uses a unique key per opening; ECO is display-only.
 - Opening dropdown labels now include ECO for easier scanning.
 - In-app Notice messages updated to be user-friendly and localizable.
 
 ### Fixed
+
 - Custom opening selection no longer crashes when no match is found.
 - Opening selection now maps to the intended position (unique key lookup).
 - Current-opening detection uses FEN-to-key mapping for correct preselection.

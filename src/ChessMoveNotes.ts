@@ -231,7 +231,7 @@ export class ChessMoveNotes extends MarkdownRenderChild {
 		const codeblockText = view.editor.getRange(from, to);
 		try {
 			return parseYaml(codeblockText);
-		} catch (_e) {
+		} catch {
 			console.debug("failed to parse codeblock's yaml config", codeblockText);
 			// failed to parse. show error...
 		}

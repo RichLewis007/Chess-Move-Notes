@@ -18,7 +18,7 @@ npm run build
 
 ## Code style
 
-- Formatting and linting are handled by Biome.
+- Formatting is handled by Prettier and linting by ESLint.
 - Run `npm run check` before submitting a PR.
 
 ## Pull requests

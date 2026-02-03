@@ -37,16 +37,16 @@ You can declare settings inside the `chess` code block, like a FEN string to des
 
 Here are the available settings for a `chess` code block:
 
-| Name          | Possible Values                                  | Description                                                  |
-| ------------- | ------------------------------------------------ | ------------------------------------------------------------ |
-| `fen`         | A valid FEN string                               | Starts the chess board with a particular position.           |
-| `pgn`         | A valid PGN string formatted for YAML            | Loads the board with the moves from a PGN game.              |
-| `orientation` | `white` / `black`                                | Orientation of the board.                                    |
-| `pieceStyle`  | A valid piece style name. See: `assets/piece-css` | Style of the pieces on the board.                            |
-| `boardStyle`  | A valid board style name. See: `assets/board-css` | Style of the chess board.                                    |
-| `drawable`    | `true` / `false`                                 | Enable drawing annotations (arrows, circles) on the board.   |
-| `viewOnly`    | `true` / `false`                                 | If enabled, displays a static chess board (no moves, no annotations). |
-| `free`        | `true` / `false`                                 | If enabled, disables chess logic, all moves are valid.       |
+| Name          | Possible Values                                   | Description                                                           |
+| ------------- | ------------------------------------------------- | --------------------------------------------------------------------- |
+| `fen`         | A valid FEN string                                | Starts the chess board with a particular position.                    |
+| `pgn`         | A valid PGN string formatted for YAML             | Loads the board with the moves from a PGN game.                       |
+| `orientation` | `white` / `black`                                 | Orientation of the board.                                             |
+| `pieceStyle`  | A valid piece style name. See: `assets/piece-css` | Style of the pieces on the board.                                     |
+| `boardStyle`  | A valid board style name. See: `assets/board-css` | Style of the chess board.                                             |
+| `drawable`    | `true` / `false`                                  | Enable drawing annotations (arrows, circles) on the board.            |
+| `viewOnly`    | `true` / `false`                                  | If enabled, displays a static chess board (no moves, no annotations). |
+| `free`        | `true` / `false`                                  | If enabled, disables chess logic, all moves are valid.                |
 
 You can permanently set some settings in the plugin settings.
 
@@ -72,7 +72,7 @@ Example:
 import { setMessages } from "./i18n";
 
 setMessages({
-  "error.invalid_fen": "Impossible de lire le FEN. Verifiez la chaine.",
+	"error.invalid_fen": "Impossible de lire le FEN. Verifiez la chaine.",
 });
 ```
 
@@ -108,19 +108,23 @@ pgn: |
 ## Roadmap
 
 Current priorities for this fork:
+
 - Maintenance: fix bugs, update dependencies, improve compatibility (desktop and mobile)
 - Small quality-of-life improvements that users request
 - Evaluate PGN file support and other higher-scope features after stability improvements
 
 Upstream TODO carried forward:
+
 - [ ] Add PGN file support
 
 ## Installation
 
 ### Community plugins (if published)
+
 After disabling Safe Mode, open Settings > Community plugins > Browse and search for "Chess Move Notes".
 
 ### Manual install
+
 1. Download the latest release from this repo.
 2. Copy the release folder into:
    - `<vault>/.obsidian/plugins/chess-move-notes/`
@@ -139,10 +143,24 @@ After disabling Safe Mode, open Settings > Community plugins > Browse and search
 Issues and pull requests are welcome.
 
 If you are reporting a bug, please include:
+
 - Obsidian version
 - Platform (macOS, Windows, Linux, iOS, Android)
 - Steps to reproduce
 - A minimal example note (if possible)
+
+## Development
+
+Code formatting is handled by Prettier and linting by ESLint.
+
+Common commands:
+
+```bash
+npm run lint
+npm run format
+npm run check
+npm run typecheck
+```
 
 ## License
 
@@ -151,5 +169,7 @@ This project is licensed under the GNU AGPLv3 license. See [LICENSE](LICENSE.TXT
 ## Support
 
 ### Support upstream
+
 If you want to support the original author of Chesser, you can donate here:
+
 - https://www.paypal.com/donate?hosted_button_id=U2SRGAFYXT32Q
