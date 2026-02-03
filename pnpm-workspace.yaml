@@ -1,0 +1,7 @@
+onlyBuiltDependencies:
+  - esbuild
+# optionally also:
+#   - @swc/core
+#   - sharp
+#   - playwritew
+# etc, only if your install complains about them

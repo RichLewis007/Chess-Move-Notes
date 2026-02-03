@@ -27,7 +27,8 @@
 		"test": "vitest",
 		"test:run": "vitest run",
 		"test:coverage": "vitest run --coverage",
-		"prepare": "husky"
+		"prepare": "husky",
+		"preinstall": "npx only-allow pnpm"
 	},
 	"lint-staged": {
 		"*.{ts,tsx,js,jsx,cjs,mjs}": [
@@ -41,10 +42,10 @@
 	"keywords": [],
 	"devDependencies": {
 		"@eslint/js": "^9.39.2",
-		"@typescript-eslint/eslint-plugin": "^8.54.0",
-		"@typescript-eslint/parser": "^8.54.0",
 		"@types/chess.js": "^0.13.7",
 		"@types/node": "^25.2.0",
+		"@typescript-eslint/eslint-plugin": "^8.54.0",
+		"@typescript-eslint/parser": "^8.54.0",
 		"@vitest/coverage-v8": "^4.0.18",
 		"builtin-modules": "^5.0.0",
 		"eslint": "^9.39.2",
@@ -54,6 +55,7 @@
 		"jsdom": "^28.0.0",
 		"lint-staged": "^16.2.7",
 		"obsidian": "1.11.4",
+		"only-allow": "^1.2.2",
 		"prettier": "^3.8.1",
 		"tslib": "^2.8.1",
 		"typescript": "^5.9.3",
@@ -61,8 +63,14 @@
 		"vitest": "^4.0.18"
 	},
 	"dependencies": {
+		"@lichess-org/chessground": "^10.0.1",
 		"chess.js": "^1.4.0",
-		"chessground": "^9.2.1",
 		"nanoid": "^5.1.6"
-	}
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"esbuild"
+		]
+	},
+	"packageManager": "pnpm@10.28.2+sha512.41872f037ad22f7348e3b1debbaf7e867cfd448f2726d9cf74c08f19507c31d2c8e7a11525b983febc2df640b5438dee6023ebb1f84ed43cc2d654d2bc326264"
 }
